@@ -454,6 +454,7 @@ class Range:
         self.node = node
         self.a = int(node['/from'].value)
         self.b = int(node['/to'].value)
+        assert self.a <= self.b
 
         address = node["/address"].value
         self.addresses = {address} if address is not None else set()
