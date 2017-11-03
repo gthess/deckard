@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from contextlib import suppress
 import glob
 import itertools
@@ -60,7 +62,7 @@ class Step:
 class Test:
     def __init__(self, path):
         aug = pydnstest.augwrap.AugeasWrapper(confpath=os.path.realpath(path),
-                                              lens='Deckard', loadpath=os.path.dirname(__file__))
+            lens='Deckard', loadpath=os.path.join(os.path.dirname(__file__), 'pydnstest'))
         self.node = aug.tree
         self.name = os.path.basename(path)
         self.path = path
