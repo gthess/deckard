@@ -33,40 +33,6 @@ def str2bool(v):
 g_rtt = 0.0
 g_nqueries = 0
 
-#
-# Element comparators
-#
-
-
-def compare_rrs(expected, got):
-    """ Compare lists of RR sets, throw exception if different. """
-    for rr in expected:
-        if rr not in got:
-            raise ValueError("expected record '%s'" % rr.to_text())
-    for rr in got:
-        if rr not in expected:
-            raise ValueError("unexpected record '%s'" % rr.to_text())
-    if len(expected) != len(got):
-        raise ValueError("expected %s records but got %s records "
-                         "(a duplicate RR somewhere?)"
-                         % (len(expected), len(got)))
-    return True
-
-
-def compare_val(expected, got):
-    """ Compare values, throw exception if different. """
-    if expected != got:
-        raise ValueError("expected '%s', got '%s'" % (expected, got))
-    return True
-
-
-def compare_sub(got, expected):
-    """ Check if got subdomain of expected, throw exception if different. """
-    if not expected.is_subdomain(got):
-        raise ValueError("expected subdomain of '%s', got '%s'" % (expected, got))
-    return True
-
-
 def recvfrom_msg(stream, raw=False):
     """
     Receive DNS message from TCP/UDP socket.
@@ -313,7 +279,7 @@ class Entry:
         for code in match_fields:
             try:
                 pydnstest.matchpart.match_part(self.message, msg, code)
-            except ValueError as ex:
+            except pydnstest.matchpart.DataMismatch as ex:
                 errstr = '%s in the response:\n%s' % (str(ex), msg.to_text())
                 # TODO: cisla radku
                 raise ValueError("%s, \"%s\": %s" % (self.node.span, code, errstr))

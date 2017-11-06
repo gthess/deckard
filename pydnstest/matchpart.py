@@ -13,13 +13,16 @@ class DataMismatch(Exception):
     def __str__(self):
         return 'expected "{0.exp_val}" got "{0.got_val}"'.format(self)
 
+    def __hash__(self):
+        return hash((self.exp_val, self.got_val))
+
     def __eq__(self, other):
         return (isinstance(other, DataMismatch)
                 and self.exp_val == other.exp_val
                 and self.got_val == other.got_val)
 
     def __ne__(self, other):
-        return self.__eq__(other)
+        return not self.__eq__(other)
 
 
 def compare_val(exp, got):
@@ -91,6 +94,15 @@ def match_qname(exp, got):
 def match_qcase(exp, got):
     return compare_val(exp.question[0].name.labels,
                        got.question[0].name.labels)
+
+
+def match_subdomain(exp, got):
+    if not exp.question:
+        return True
+    qname = dns.name.from_text(got.question[0].name.to_text().lower())
+    if exp.question[0].name.is_subdomain(qname):
+        return True
+    raise DataMismatch(exp, got)
 
 
 def match_flags(exp, got):
@@ -167,17 +179,15 @@ def match_nsid(exp, got):
 
 
 match = {"opcode": match_opcode, "qtype": match_qtype, "qname": match_qname, "qcase": match_qcase,
-         "flags": match_flags, "rcode": match_rcode, "question": match_question,
-         "answer": match_answer, "ttl": match_ttl, "answertypes": match_answertypes,
-         "answerrrsigs": match_answerrrsigs, "authority": match_authority,
-         "additional": match_additional, "edns": match_edns, "nsid": match_nsid}
+         "subdomain": match_subdomain, "flags": match_flags, "rcode": match_rcode,
+         "question": match_question, "answer": match_answer, "ttl": match_ttl,
+         "answertypes": match_answertypes, "answerrrsigs": match_answerrrsigs,
+         "authority": match_authority, "additional": match_additional, "edns": match_edns,
+         "nsid": match_nsid}
 
 
 def match_part(exp, got, code):
-    with suppress(DataMismatch):
-        try:
-            if match[code](exp, got):
-                return True
-            return False
-        except KeyError:
-            raise NotImplementedError('unknown match request "%s"' % code)
+    try:
+        return match[code](exp, got)
+    except KeyError:
+        raise NotImplementedError('unknown match request "%s"' % code)
