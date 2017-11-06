@@ -35,10 +35,6 @@ def is_empty(iterable):
     return False
 
 
-def step_error(test, step, desc):
-    print("%s: step %s: %s" % (os.path.basename(test), step.value, desc))
-
-
 class Entry:
     def __init__(self, node):
         self.match = {m.value for m in node.match("/match")}
@@ -62,7 +58,9 @@ class Step:
 class Test:
     def __init__(self, path):
         aug = pydnstest.augwrap.AugeasWrapper(confpath=os.path.realpath(path),
-            lens='Deckard', loadpath=os.path.join(os.path.dirname(__file__), 'pydnstest'))
+                                              lens='Deckard',
+                                              loadpath=os.path.join(os.path.dirname(__file__),
+                                                                    'pydnstest'))
         self.node = aug.tree
         self.name = os.path.basename(path)
         self.path = path

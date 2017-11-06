@@ -33,6 +33,7 @@ def str2bool(v):
 g_rtt = 0.0
 g_nqueries = 0
 
+
 def recvfrom_msg(stream, raw=False):
     """
     Receive DNS message from TCP/UDP socket.
