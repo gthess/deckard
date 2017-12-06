@@ -27,11 +27,11 @@ let type = [label "type" . store ((/[^0-9#;\n \t][^\t\n\/#; ]*/) - class_re) ]
 let data_re = /([^ \t\n#;][^\n#;]*[^ \t\n#;])|[^ \t\n#;]/ (*Can not start nor end with whitespace but can have whitespace in the middle. Disjunction is there so we match strings of length one.*)
 let data = [label "data" . store data_re ]
 
-let ip_re = /[0-9a-f.:]+/
+let ip_re = /[0-9a-fA-F.:]+/
 let hex_re = /[0-9a-fA-F]+/
 
 
-let match_option =  "opcode" | "qtype" | "qcase" | "qname" | "subdomain" | "flags" | "rcode" | "question" | "answer" | "authority" | "additional" | "all" | "TCP" | "ttl"
+let match_option =  "opcode" | "qtype" | "qcase" | "qname" | "subdomain" | "flags" | "rcode" | "question" | "answer" | "authority" | "additional" | "all" | "TCP" | "ttl" | "do"
 let adjust_option = "copy_id" | "copy_query"
 let reply_option = "QR" | "TC" | "AA" | "AD" | "RD" | "RA" | "CD" | "DO" | "NOERROR" | "FORMERR" | "SERVFAIL" | "NXDOMAIN" | "NOTIMP" | "REFUSED" | "YXDOMAIN" | "YXRRSET" | "NXRRSET" | "NOTAUTH" | "NOTZONE" | "BADVERS" | "QUERY" | "IQUERY" | "STATUS" | "NOTIFY" | "UPDATE"
 let step_option = "REPLY" | "QUERY" | "CHECK_ANSWER" | "CHECK_OUT_QUERY" | /TIME_PASSES[ \t]+ELAPSE/
