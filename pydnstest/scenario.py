@@ -393,6 +393,13 @@ class Entry:
             if msg.payload != expected.payload:
                 raise ValueError('expected EDNS bufsize %d, got %d'
                                  % (expected.payload, msg.payload))
+        elif code == 'do':
+            msg_do_bit = (msg.ednsflags ^ 32768) >> 15
+            expected_do_bit = (expected.ednsflags ^ 32768) >> 15
+            if msg_do_bit != expected_do_bit:
+                raise ValueError('expected DO bit %d, got %d'
+                                 % (expected_do_bit, msg_do_bit))
+            return True
         elif code == 'nsid':
             nsid_opt = None
             for opt in expected.options:
