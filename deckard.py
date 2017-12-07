@@ -235,7 +235,7 @@ def setup_daemon_files(prog_cfg, template_ctx, ta_files):
 
     # generate configuration files
     j2template_loader = jinja2.FileSystemLoader(
-        searchpath=os.path.dirname(os.path.abspath(__file__)))
+        searchpath=[os.getcwd(), os.path.dirname(os.path.abspath(__file__))])
     j2template_env = jinja2.Environment(loader=j2template_loader)
     logging.getLogger('deckard.daemon.%s.template' % name).debug(subst)
 
